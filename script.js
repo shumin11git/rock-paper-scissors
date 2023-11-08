@@ -33,10 +33,11 @@ function game(resultsArray) {
             : result.includes("lose") ? computerWin++
             : draws++;
     }
-    return "You won: " + youWin + ", You lost: " + computerWin + ", Draws: " + draws;
+    return "You won: " + youWin + "\nYou lost: " + computerWin + "\nDraws: " + draws + "\nRounds played: " + roundCount;
 }
 
 let choice = document.querySelectorAll("#choices button");
+let midButton = document.querySelector("#paper");
 let roundResult = document.querySelector("#roundresult");
 let gameResult = document.querySelector("#gameresult");
 let resultsArray = [];
@@ -53,14 +54,14 @@ choice.forEach(button => {
         roundCount++;
         if (oneRound.includes("win")) wins++;
         else if (oneRound.includes("lose")) losses++;
-        roundResult.textContent = oneRound + " // Rounds played: " + roundCount + ", you won: " + wins;
+        roundResult.textContent = oneRound + "\nRounds played: " + roundCount + "\nYou won: " + wins;
         resultsArray.push(oneRound);
         if (wins === 5 || losses === 5) {
-            if (losses > wins) gameResult.style = "border-left: 10px solid red";
-            else gameResult.style = "border-left: 10px solid green";
+            if (losses > wins) gameResult.style = "color: #dc143c";
+            else gameResult.style = "color: #7CFC00";
             let oneGame = game(resultsArray);
             let winRate = Math.round(wins / roundCount * 100) / 100;
-            gameResult.textContent = ">\t" + oneGame + " Win rate: " + winRate;
+            gameResult.textContent = oneGame + "\nWin rate: " + winRate;
             resultsArray = [];
             wins = 0;
             roundCount = 0;
