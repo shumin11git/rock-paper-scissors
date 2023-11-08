@@ -24,27 +24,49 @@ function playRound(playerSelection, computerSelection) {
     } else return "Invalid arguments.";
 }
 
-function game() {
-    let youWon = 0;
-    let computerWon = 0;
+function game(resultsArray) {
+    let computerWin = 0;
     let draws = 0;
-    let roundCount = 0;
-
-    while (roundCount < 5) {
-        let playerSelection = prompt("Choose rock, paper or scissors. Round number: " + (roundCount));
-        let computerSelection = getComputerChoice();
-        if (playerSelection === "") return "Didn't get your choice.";
-        let result = playRound(playerSelection, computerSelection);
-        roundCount++;
-        if (roundCount === 5) fifthRound = "\n\n--- Game concluded. Cheers!";
-        result[4] === "w" ? youWon++
-            : result[4] === "l" ? computerWon++
+    let youWin = 0;
+    for (let result of resultsArray) {
+        result.includes("win") ? youWin++
+            : result.includes("lose") ? computerWin++
             : draws++;
-            let score = "You won: " + youWon + ", You lost: " + computerWon + ", Draws: " + draws;
-        console.log(result + "\n", score + "\n", "Rounds played: " + roundCount);
     }
-    
-    return "Game concluded. Cheers!";
+    return "You won: " + youWin + ", You lost: " + computerWin + ", Draws: " + draws;
 }
 
-game();
+let choice = document.querySelectorAll("#choices button");
+let roundResult = document.querySelector("#roundresult");
+let gameResult = document.querySelector("#gameresult");
+let resultsArray = [];
+let wins = 0;
+let losses = 0;
+let roundCount = 0;
+
+choice.forEach(button => {
+    button.addEventListener("click", e => {
+        if (resultsArray.length === 0) {;
+            gameResult.textContent = "";
+        }
+        let oneRound = playRound(e.target.id, getComputerChoice());
+        roundCount++;
+        if (oneRound.includes("win")) wins++;
+        else if (oneRound.includes("lose")) losses++;
+        roundResult.textContent = oneRound + " // Rounds played: " + roundCount + ", you won: " + wins;
+        resultsArray.push(oneRound);
+        if (wins === 5 || losses === 5) {
+            if (losses > wins) gameResult.style = "border-left: 10px solid red";
+            else gameResult.style = "border-left: 10px solid green";
+            let oneGame = game(resultsArray);
+            let winRate = Math.round(wins / roundCount * 100) / 100;
+            gameResult.textContent = ">\t" + oneGame + " Win rate: " + winRate;
+            resultsArray = [];
+            wins = 0;
+            roundCount = 0;
+            winRate = 0;
+            losses = 0;
+        }
+    });
+})
+
